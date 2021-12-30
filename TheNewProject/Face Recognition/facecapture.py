@@ -10,8 +10,9 @@
 import cv2
 import os
 
+
 filename = 'face_1.jpg'
-path = r"C:\\Users\\delay\\PycharmProjects\\pythonProject\\TheNewProject\\Faces\\"
+path = r"/TheNewProject/Faces\\"
 cascPath=os.path.dirname(cv2.__file__)+"/data/haarcascade_frontalface_default.xml"
 faceCascade = cv2.CascadeClassifier(cascPath)
 video_capture = cv2.VideoCapture(0)
@@ -47,9 +48,11 @@ def dsf60(amount, count):
         cv2.imshow('Video', frames)
 
 
-        #if cv2.waitKey(1) & 0xFF == ord('q'):
-            #video_capture.release()
-            #video_capture.release()
+        if cv2.waitKey(1) & 0xFF == ord('q'):
+            video_capture.release()
+            video_capture.release()
+
+dsf60(80, 0)
 
 
 
