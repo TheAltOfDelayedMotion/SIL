@@ -1,18 +1,19 @@
 import os
 import pickle
-
+import Directory
 from PIL import Image
 import numpy as np
 import cv2
 
 #fileread = open()
+labelstxt = os.path.join(Directory.datadir, "labels.txt")
+trainneryml = os.path.join(Directory.datadir, "trainner.yml")
 
 def facetrainer():
     face_cascade = cv2.CascadeClassifier(os.path.dirname(cv2.__file__) + "/data/haarcascade_frontalface_default.xml")
     recognizer = cv2.face.LBPHFaceRecognizer_create()
 
-    BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-    image_dir = os.path.join(BASE_DIR, "../Faces")
+    image_dir = r"C:\Users\delay\PycharmProjects\pythonProject\TheNewProject\Face Recognition\TrainedFaces\1"
 
     current_id = 0
 
@@ -24,7 +25,7 @@ def facetrainer():
     for root, dirs, files in os.walk(image_dir):
         for file in files:
             if file.endswith("png") or file.endswith("jpg"):
-                path = os.path.join(root, file)
+                path = os.path.join(Directory.timgdir, "1",  file)
                 label = os.path.basename(os.path.dirname(path)).replace(" ", "-").lower()
 
                 if not label in label_ids:
@@ -46,10 +47,10 @@ def facetrainer():
                     x_train.append(roi)
                     y_labels.append(id_)
 
-    with open("labels.txt", 'wb') as f:
+    with open(labelstxt, 'wb') as f:
         pickle.dump(label_ids, f)
 
     recognizer.train(x_train, np.array(y_labels))
-    recognizer.save("trainner.yml")
+    recognizer.save(trainneryml)
 
 facetrainer()

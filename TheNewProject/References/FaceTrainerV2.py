@@ -4,17 +4,21 @@ from PIL import Image
 import numpy as np
 import cv2
 
-with open("../labels.txt", 'rb') as f:
+with open(r"/TheNewProject/Face Recognition/__data__/labels.txt",'rb') as f:
     _labels = pickle.load(f)
-    labels = {v:k for k,v in _labels.items()}
+    labels = {v: k for k, v in _labels.items()}
+
+countopen = open(r"C:\Users\delay\PycharmProjects\pythonProject\TheNewProject\Face Recognition\count.txt", "r+")
+print(countopen.read())
+countopen.seek(0)
 
 def facetrainer():
     face_cascade = cv2.CascadeClassifier(os.path.dirname(cv2.__file__) + "/data/haarcascade_frontalface_default.xml")
     recognizer = cv2.face.LBPHFaceRecognizer_create()
-    recognizer.read(r"C:\Users\delay\PycharmProjects\pythonProject\TheNewProject\Face Recognition\trainner.yml")
+    recognizer.read(r"trainner.yml")
 
     BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-    image_dir = os.path.join(BASE_DIR, "../../Faces")
+    image_dir = BASE_DIR  # os.path.join(BASE_DIR, "../../Faces")
 
     current_id = 0
 
@@ -28,6 +32,8 @@ def facetrainer():
             if file.endswith("png") or file.endswith("jpg"):
                 path = os.path.join(root, file)
                 label = os.path.basename(os.path.dirname(path)).replace(" ", "-").lower()
+                print(label)
+                print(path)
                 print("Picture Found")
 
                 if not label in label_ids:
@@ -45,7 +51,7 @@ def facetrainer():
                                                       scaleFactor=1.1,
                                                       minNeighbors=5)
 
-                for (x,y,w,h) in faces:
+                for (x, y, w, h) in faces:
                     roi_gray = gray[y:y + h, x:x + w]
                     id_, conf = recognizer.predict(roi_gray)
                     print("Face found")
@@ -53,20 +59,22 @@ def facetrainer():
 
                     if conf >= 4 and conf <= 80:
                         name = labels[id_]
-                        os.rename(path, os.path.join(root, name)) #path = C:\Users\delay\PycharmProjects\pythonProject\TheNewProject\Face Recognition\ToProcess\1, 0
+                        os.rename(path, os.path.join(root,name))  # path = C:\Users\delay\PycharmProjects\pythonProject\TheNewProject\Face Recognition\ToProcess\1, 0
                         print("Remapping")
+                        print("----------------------------------")
 
-                    else:
-                        roi = image_array[y:y+h, x:x+w]
+                    elif conf >= 80 and conf <= 150:
+                        roi = image_array[y:y + h, x:x + w]
                         x_train.append(roi)
                         y_labels.append(id_)
-                        print("training")
-
+                        print("Training")
+                        print("----------------------------------")
 
     with open("../labels.txt", 'wb') as f:
         pickle.dump(label_ids, f)
 
     recognizer.train(x_train, np.array(y_labels))
-    recognizer.save(r"C:\Users\delay\PycharmProjects\pythonProject\TheNewProject\Face Recognition\trainner.yml")
+    recognizer.save("trainner.yml")
+
 
 facetrainer()

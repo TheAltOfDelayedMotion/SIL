@@ -12,7 +12,7 @@ import os
 
 
 filename = 'face_1.jpg'
-path = r"/TheNewProject/Faces\\"
+path = r"C:\Users\delay\PycharmProjects\pythonProject\TheNewProject\Face Recognition\ToProcess"
 cascPath=os.path.dirname(cv2.__file__)+"/data/haarcascade_frontalface_default.xml"
 faceCascade = cv2.CascadeClassifier(cascPath)
 video_capture = cv2.VideoCapture(0)
@@ -36,7 +36,7 @@ def dsf60(amount, count):
             roi_color = frames[y:y + h, x:x + w]
 
             if count < (amount + 1):
-                cv2.imwrite(path + 'face' + str(count) + '.jpg', roi_color)
+                cv2.imwrite(os.path.join(path, str(count) + '.jpg') , roi_color)
                 count = count + 1
 
             else:
